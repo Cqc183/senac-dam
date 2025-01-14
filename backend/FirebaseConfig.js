@@ -1,25 +1,34 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { initializeAuth, signInWithEmailAndPassword, getReactNativePersistence } from 'firebase/auth'; // Nome corrigido
-import AsyncStorage from "@react-native-async-storage/async-storage"; // Importação correta
+//import { getAnalytics } from "firebase/analytics";
+import { signInWithEmailAndPassword, initializeAuth, getReactNativePersistence, 
+    createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { getFirestore } from 'firebase/firestore';
+
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyD2Efm8gEXpu07ByK-mbH8mnIFPtaY7vrg",
-  authDomain: "helloapp-18fe1.firebaseapp.com",
-  projectId: "helloapp-18fe1",
-  storageBucket: "helloapp-18fe1.firebasestorage.app",
-  messagingSenderId: "570644623068",
-  appId: "1:570644623068:web:90cc385a08fc500d690e19",
-  measurementId: "G-S2EF401TB3"
+  apiKey: "AIzaSyAfIKjvwRS3R8ysp1TFoo1J0KvzXDRcfB8",
+  authDomain: "helloapp-102f7.firebaseapp.com",
+  projectId: "helloapp-102f7",
+  storageBucket: "helloapp-102f7.firebasestorage.app",
+  messagingSenderId: "572475404390",
+  appId: "1:572475404390:web:c23d9457aa5732f3d4bda7",
+  measurementId: "G-L5GNRP7W0H"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Initialize Firebase Auth with persistence
+//const analytics = getAnalytics(app);
+//const auth = getAuth(app);
 const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage), // Uso correto de AsyncStorage
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage)
 });
 
-export { app, auth, signInWithEmailAndPassword };
+const banco = getFirestore(app);
+export {app, auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, 
+   banco};
