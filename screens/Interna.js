@@ -4,11 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth, banco } from '../backend/FirebaseConfig';
 import { collection, query, where, getDocs, doc, deleteDoc } from "firebase/firestore";
-
-const InternaScreen = () => {
+const InternaScreen = ({Navigation}) => {
     const [userId, setUserId] = useState(null);
     const [tarefas, setTarefas] = useState(null);
-    const navegacao = useNavigation();
 
     const buscarTarefas = async () => {
         const q = query(collection(banco, "tarefas"), where("userId", "==", userId));
@@ -21,10 +19,11 @@ const InternaScreen = () => {
         const usuario = onAuthStateChanged(auth, user => {
             if (user) {
                 setUserId(user.uid);
-                buscarTarefas();
+               
             } else {
                 setUserId(null);
             }
+            buscarTarefas();
         });
 
         return () => usuario();
@@ -34,10 +33,12 @@ const InternaScreen = () => {
         try {
             Alert.alert("Atenção", "Deseja excluir?", [
                 { text: 'Sim', onPress: () => executarExclusao(id) },
-                { text: "Não" }
-            ]);
+                { text: "Não", onPress: () => "" 
+
+                }]
+            );
         } catch (e) {
-            Alert.alert("Erro ao excluir: ", e.message);
+            Alert.alert("Erro ao excluir: ", e);
         }
     };
 
@@ -45,26 +46,19 @@ const InternaScreen = () => {
         const tarefa = doc(banco, "tarefas", id);
         await deleteDoc(tarefa);
         buscarTarefas();
+
     };
 
     const abrirEdicao = (id) => {
-        navegacao.navigate("CriarTarefa");
+        navigation.navigate("CriarTarefa", {idTarefa: id});
     };
+    const navegacao = useNavigation();
 
-    const realizarLogout = async () => {
-        try {
-            await signOut(auth);
-            navegacao.navigate("Home");
-        } catch (error) {
-            Alert.alert("Erro ao sair", error.message);
-        }
-    };
-
-    return (
+        return (
         <View>
             <Text>Bem-vindo</Text>
-            <Button title="Nova Tarefa" onPress={() => navegacao.navigate('CriarTarefa')} />
-            <Button title="Sair" onPress={realizarLogout} /> {/* Botão "Sair" */}
+            <Button title="Nova Tarefa" onPress={() => navigation.navigate('CriarTarefa', {idTarefa: ''})} />
+            
             <FlatList 
                 data={tarefas} 
                 renderItem={({ item }) => (
